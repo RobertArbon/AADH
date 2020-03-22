@@ -1,0 +1,9 @@
+*.xtc
+*.pdb
+.DS_Store
+*.doc*
+.ipynb_checkpoints/
+*.png
+*.csv
+*.p
+
