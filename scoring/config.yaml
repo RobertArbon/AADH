@@ -1,0 +1,48 @@
+# osprey configuration file.
+# Using PyEMMA  estimator. TICA and Cluster have to be 
+# initialized with dummy numbers. 
+# Timestep of trajectories area 0.01 ns
+# Time lag is 2 ns = 200
+# Number of scoring eigenvalues is 4 - this includes the trivial eigenvalue 
+#
+
+estimator:
+  eval: |
+      Pipeline([ ('tica',TICA(lag=1, kinetic_map=True)),
+                 ('cluster', KmeansClustering(n_clusters=1, max_iter=1000)),
+                 ('msm', MaximumLikelihoodMSM(lag=200, score_k=4, score_method='VAMP2'))])
+  eval_scope: pyemma 
+
+strategy:
+  name: random
+
+search_space:
+  tica__lag:
+    min: 10
+    max: 1000
+    type: int
+
+  tica__dim:
+    min: 1
+    max: 20
+    type: int
+
+  cluster__n_clusters:
+    min: 10
+    max: 1000
+    type: int
+
+cv:
+    name: shufflesplit
+    params:
+      n_splits: 30 
+      test_size: 0.5
+
+dataset_loader:
+  name: numpy
+  params:
+    filenames: dataset_path 
+
+trials:
+  uri: sqlite:///osprey-trials.db
+  project_name: continuous_feature 
